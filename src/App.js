@@ -1,24 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState, useEffect} from 'react';
 import './App.css';
+import axios from 'axios'
+import {Route} from 'react-router-dom'
+import Search from './components/Search'
+import Nav from './components/Nav'
+import Add from './components/Add'
+
 
 function App() {
+
+  useEffect(()=>{
+    axios.get('https://acitems.herokuapp.com/api/search')
+      .then(res=>setList(res.data))
+      .catch(err=>console.log(err))
+  },[])
+
+
+  const [list, setList] = useState([]);
+  const [filteredList, setFilteredList] = useState([]);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Nav/>
+      <div className="filter">
+        
+        <div>
+          <Route exact path="/">
+            <Search list={list} filteredList={filteredList} setFilteredList={setFilteredList}/>
+          </Route>
+          <Route path="/add">
+            <Add/>
+          </Route>
+          
+        </div>
+      </div>
     </div>
   );
 }
